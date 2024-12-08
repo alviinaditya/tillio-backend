@@ -5,15 +5,21 @@ import catchError from "../../shared/errors/catchError";
 import { createResponse } from "../../shared/errors/createResponse";
 import { OK } from "../../shared/constants/httpStatusCode";
 import { GetUser } from "../../domain/usecases/user/GetUses";
+import { ChangePassword } from "../../domain/usecases/user/ChangePassword";
+import { ChangePasswordDTO } from "../../shared/dtos/userDTO";
+import Validator from "../../shared/utils/Validator";
+import UserValidation from "../validations/user/UserValidation";
 
 class UserController {
   private getAllUsers: GetAllUsers;
   private getUser: GetUser;
+  private changePassword: ChangePassword;
 
   constructor() {
     const diContainer = new DIContainer();
     this.getAllUsers = diContainer.getAllUsersUseCase();
     this.getUser = diContainer.getUserUseCase();
+    this.changePassword = diContainer.getChangePasswordUseCase();
   }
 
   static getAll = catchError(async (req: Request, res: Response) => {
@@ -36,6 +42,23 @@ class UserController {
       message: "User fetched successfully",
       success: true,
       data: user,
+    });
+  });
+
+  static changePassword = catchError(async (req: Request, res: Response) => {
+    const userController = new UserController();
+    const request: ChangePasswordDTO = Validator.validate(
+      UserValidation.CHANGE_PASSWORD,
+      { ...req.body }
+    );
+    request.userId = res.locals.userId;
+    request.currentSessionId = res.locals.sessionId;
+    await userController.changePassword.execute(request);
+    return createResponse(res, {
+      statusCode: OK,
+      message: "Password changed successfully",
+      success: true,
+      data: null,
     });
   });
 }

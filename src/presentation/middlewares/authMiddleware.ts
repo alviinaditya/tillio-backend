@@ -33,6 +33,7 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
 
   res.locals.userId = payload?.userId;
   res.locals.role = payload?.role;
+  res.locals.sessionId = payload?.sessionId;
 
   next();
 };

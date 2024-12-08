@@ -8,6 +8,7 @@ class UserValidation {
   static readonly RESET_PASSWORD = userSchemas.resetPasswordSchema;
   static readonly RESEND_VERIFICATION_EMAIL =
     userSchemas.resendVerificationEmailSchema;
+  static readonly CHANGE_PASSWORD = userSchemas.changePasswordSchema;
 }
 
 export default UserValidation;

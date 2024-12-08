@@ -7,5 +7,8 @@ export interface SessionRepository {
   create(data: Partial<Session>): Promise<Session>;
   update(data: Partial<Session>): Promise<Session>;
   delete(sessionId: Types.ObjectId): Promise<void>;
-  deleteByUserId(userId: Types.ObjectId): Promise<void>;
+  deleteByUserId(
+    userId: Types.ObjectId,
+    exceptSessionId?: Types.ObjectId
+  ): Promise<void>;
 }

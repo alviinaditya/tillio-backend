@@ -9,6 +9,7 @@ import { RegisterUser } from "../domain/usecases/auth/RegisterUser";
 import { ResendVerificationEmail } from "../domain/usecases/auth/ResendVerificationEmail";
 import { ResetPassword } from "../domain/usecases/auth/ResetPassword";
 import { VerifyEmail } from "../domain/usecases/auth/VerifyEmail";
+import { ChangePassword } from "../domain/usecases/user/ChangePassword";
 import { GetAllUsers } from "../domain/usecases/user/GetAllUsers";
 import { GetUser } from "../domain/usecases/user/GetUses";
 
@@ -96,5 +97,12 @@ export class DIContainer {
 
   getUserUseCase(): GetUser {
     return new GetUser(this.getUserRepository());
+  }
+
+  getChangePasswordUseCase(): ChangePassword {
+    return new ChangePassword(
+      this.getUserRepository(),
+      this.getSessionRepository()
+    );
   }
 }

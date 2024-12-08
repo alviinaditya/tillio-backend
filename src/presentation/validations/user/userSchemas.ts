@@ -28,7 +28,7 @@ export const emailSchema = z.string().email("Invalid email address.");
 // Combined Schemas
 export const loginSchema = z.object({
   username: usernameSchema,
-  password: passwordSchema,
+  password: z.string(),
   userAgent: userAgentSchema,
 });
 
@@ -47,4 +47,10 @@ export const resendVerificationEmailSchema = z.object({
 export const resetPasswordSchema = z.object({
   code: verificationCodeSchema,
   password: passwordSchema,
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string(),
+  newPassword: passwordSchema,
+  logoutOtherSessions: z.boolean().default(false),
 });

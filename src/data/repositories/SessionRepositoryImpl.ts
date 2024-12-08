@@ -29,7 +29,16 @@ export class SessionRepositoryImpl implements SessionRepository {
   async delete(sessionId: Types.ObjectId): Promise<void> {
     await SessionModel.findByIdAndDelete(sessionId);
   }
-  async deleteByUserId(userId: Types.ObjectId): Promise<void> {
-    await SessionModel.deleteMany({ userId });
+  async deleteByUserId(
+    userId: Types.ObjectId,
+    exceptSessionId?: Types.ObjectId
+  ): Promise<void> {
+    const query: { userId: Types.ObjectId; _id?: { $ne: Types.ObjectId } } = {
+      userId,
+    };
+    if (exceptSessionId) {
+      query._id = { $ne: exceptSessionId };
+    }
+    await SessionModel.deleteMany(query);
   }
 }
