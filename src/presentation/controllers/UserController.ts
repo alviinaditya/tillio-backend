@@ -4,7 +4,7 @@ import { GetAllUsers } from "../../domain/usecases/user/GetAllUsers";
 import catchError from "../../shared/errors/catchError";
 import { createResponse } from "../../shared/errors/createResponse";
 import { OK } from "../../shared/constants/httpStatusCode";
-import { GetUser } from "../../domain/usecases/user/GetUses";
+import { GetUser } from "../../domain/usecases/user/GetUser";
 import { ChangePassword } from "../../domain/usecases/user/ChangePassword";
 import { ChangePasswordDTO } from "../../shared/dtos/userDTO";
 import Validator from "../../shared/utils/Validator";
