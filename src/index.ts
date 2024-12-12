@@ -7,6 +7,7 @@ import connectDB from "./config/db";
 import authRouter from "./presentation/routes/authRouter";
 import errorMiddleware from "./presentation/middlewares/errorMiddleware";
 import userRouter from "./presentation/routes/userRoutes";
+import sessionRouter from "./presentation/routes/sessionRouter";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
+app.use("/session", sessionRouter);
 app.use(errorMiddleware);
 
 app.listen(PORT, async () => {

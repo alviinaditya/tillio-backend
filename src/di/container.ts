@@ -9,9 +9,12 @@ import { RegisterUser } from "../domain/usecases/auth/RegisterUser";
 import { ResendVerificationEmail } from "../domain/usecases/auth/ResendVerificationEmail";
 import { ResetPassword } from "../domain/usecases/auth/ResetPassword";
 import { VerifyEmail } from "../domain/usecases/auth/VerifyEmail";
+import { DeleteSession } from "../domain/usecases/session/DeleteSession";
+import { GetAllSessions } from "../domain/usecases/session/GetAllSessions";
+import { GetUserSessions } from "../domain/usecases/session/GetUserSessions";
 import { ChangePassword } from "../domain/usecases/user/ChangePassword";
 import { GetAllUsers } from "../domain/usecases/user/GetAllUsers";
-import { GetUser } from "../domain/usecases/user/GetUses";
+import { GetUser } from "../domain/usecases/user/GetUser";
 
 export class DIContainer {
   private userRepository: UserRepositoryImpl;
@@ -104,5 +107,18 @@ export class DIContainer {
       this.getUserRepository(),
       this.getSessionRepository()
     );
+  }
+
+  // Session use case
+  getAllSessionsUseCase(): GetAllSessions {
+    return new GetAllSessions(this.getSessionRepository());
+  }
+
+  getUserSessionsUseCase(): GetUserSessions {
+    return new GetUserSessions(this.getSessionRepository());
+  }
+
+  deleteSessionUseCase(): DeleteSession {
+    return new DeleteSession(this.getSessionRepository());
   }
 }

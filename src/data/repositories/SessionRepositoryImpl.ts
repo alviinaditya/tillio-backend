@@ -4,8 +4,15 @@ import { SessionRepository } from "../../domain/interfaces/SessionRepository";
 import SessionModel from "../models/SessionModel";
 
 export class SessionRepositoryImpl implements SessionRepository {
+  async findAll(): Promise<Session[]> {
+    const sessions = await SessionModel.find().exec();
+    return sessions;
+  }
   async findById(sessionId: Types.ObjectId): Promise<Session | null> {
-    return await SessionModel.findOne({ sessionId });
+    return await SessionModel.findOne({ _id: sessionId });
+  }
+  async findByUserId(userId: Types.ObjectId): Promise<Session[] | null> {
+    return await SessionModel.find({ userId });
   }
   async checkSession(sessionId: Types.ObjectId): Promise<Session | null> {
     return await SessionModel.findOne({
