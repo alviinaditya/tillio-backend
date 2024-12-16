@@ -7,6 +7,7 @@ import { createResponse } from "../../shared/errors/createResponse";
 import { OK } from "../../shared/constants/httpStatusCode";
 import { DeleteSession } from "../../domain/usecases/session/DeleteSession";
 import { Types } from "mongoose";
+import { GetSessionResponseDTO } from "../../shared/dtos/sessionDTO";
 
 class SessionController {
   private getAllSessions: GetAllSessions;
@@ -33,12 +34,17 @@ class SessionController {
   static getByUser = catchError(async (req: Request, res: Response) => {
     const sessionController = new SessionController();
     const userId = res.locals.userId;
+    const sessionId = res.locals.sessionId;
     const sessions = await sessionController.getUserSessions.execute(userId);
+    const data: GetSessionResponseDTO = {
+      sessions: sessions,
+      currentSessionId: sessionId,
+    };
     return createResponse(res, {
       statusCode: OK,
       message: "User sessions fetched successfully",
       success: true,
-      data: sessions,
+      data,
     });
   });
 
