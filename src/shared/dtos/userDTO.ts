@@ -7,3 +7,13 @@ export interface ChangePasswordDTO {
   logoutOtherSessions: boolean;
   currentSessionId: Types.ObjectId;
 }
+
+export interface UpdateProfileDTO {
+  userId: Types.ObjectId;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  bio?: string;
+  avatar?: string;
+}

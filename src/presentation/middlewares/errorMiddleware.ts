@@ -11,6 +11,7 @@ import {
 import ResponseError from "../../shared/errors/ResponseError";
 import { createResponse } from "../../shared/errors/createResponse";
 import { logger } from "../../shared/providers/LoggerProvider";
+import { MulterError } from "multer";
 
 const errorMiddleware: ErrorRequestHandler = (error, req, res, next) => {
   console.error(error);
@@ -35,6 +36,13 @@ const errorMiddleware: ErrorRequestHandler = (error, req, res, next) => {
   } else if (error instanceof ResponseError) {
     createResponse(res, {
       statusCode: error.status,
+      success: false,
+      message: error.message,
+      data: null,
+    });
+  } else if (error instanceof MulterError) {
+    createResponse(res, {
+      statusCode: BAD_REQUEST,
       success: false,
       message: error.message,
       data: null,

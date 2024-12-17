@@ -54,3 +54,15 @@ export const changePasswordSchema = z.object({
   newPassword: passwordSchema,
   logoutOtherSessions: z.boolean().default(false),
 });
+
+export const updateProfileSchema = z.object({
+  username: usernameSchema.optional(),
+  email: emailSchema.optional(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  bio: z
+    .string()
+    .max(500, "Bio must be at most 500 characters long.")
+    .optional(),
+  avatar: z.string().optional(),
+});
