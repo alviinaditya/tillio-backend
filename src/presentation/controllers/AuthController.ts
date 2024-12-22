@@ -28,6 +28,9 @@ import { ResetPassword } from "../../domain/usecases/auth/ResetPassword";
 import { ResendVerificationEmail } from "../../domain/usecases/auth/ResendVerificationEmail";
 import { createResponse } from "../../shared/errors/createResponse";
 
+import os from "os";
+import { getDeviceInfo } from "../../shared/utils/getDeviceInfoUtils";
+
 class AuthController {
   private registerUser: RegisterUser;
   private loginUser: LoginUser;
@@ -68,11 +71,11 @@ class AuthController {
 
   static login = catchError(async (req: Request, res: Response) => {
     const authController = new AuthController();
+    const userAgent = getDeviceInfo(req.headers["user-agent"]);
     const request: LoginUserDTO = Validator.validate(UserValidation.LOGIN, {
       ...req.body,
-      userAgent: req.headers["user-agent"],
+      userAgent: userAgent,
     });
-
     const user = await authController.loginUser.execute(request);
     console.log(user);
     if (user && user.accessToken && user.refreshToken) {
