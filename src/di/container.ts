@@ -112,7 +112,10 @@ export class DIContainer {
   }
 
   getUpdateProfileUseCase(): UpdateProfile {
-    return new UpdateProfile(this.getUserRepository());
+    return new UpdateProfile(
+      this.getUserRepository(),
+      this.getVerificationCodeRepository()
+    );
   }
 
   // Session use case

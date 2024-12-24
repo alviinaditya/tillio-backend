@@ -9,9 +9,17 @@ import {
 import { UpdateProfileDTO } from "../../../shared/dtos/userDTO";
 import deletePublicFile from "../../../shared/utils/deleteFileUtils";
 import { logger } from "../../../shared/providers/LoggerProvider";
+import { VerificationCodeRepository } from "../../interfaces/VerificationCodeRepository";
+import { VerificationCodeTypes } from "../../../shared/constants/enums";
+import { thirtyDaysFromNow } from "../../../shared/utils/dateUtils";
+import { Types } from "mongoose";
+import { emailProvider } from "../../../shared/providers/EmailProvider";
 
 export class UpdateProfile {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly verificationCodeRepository: VerificationCodeRepository
+  ) {}
 
   async execute(payload: UpdateProfileDTO): Promise<Omit<User, "password">> {
     // Retrieve the user by ID
@@ -30,15 +38,18 @@ export class UpdateProfile {
       await this.checkIfUsernameExists(payload.username);
     }
 
+    const isEmailChanged = payload.email && payload.email !== user.email;
+
     // Prepare the data to update the user profile
     const updatedData: Partial<User> = {
       _id: user._id,
       username: payload.username || user.username,
       email: payload.email || user.email,
+      isVerified: isEmailChanged ? false : user.isVerified,
       profile: {
         firstName: payload.firstName || user.profile?.firstName,
-        lastName: payload.lastName || user.profile?.lastName,
-        bio: payload.bio || user.profile?.bio,
+        lastName: payload.lastName,
+        bio: payload.bio,
         avatar: payload.avatar || user.profile?.avatar,
       },
     };
@@ -52,8 +63,12 @@ export class UpdateProfile {
       );
     }
 
+    if (isEmailChanged) {
+      await this.sendVerificationEmail(updatedUser._id, updatedUser.email);
+    }
+
     // Delete the old avatar if exists
-    if (user.profile?.avatar) {
+    if (user.profile?.avatar && payload.avatar) {
       await this.deleteOldAvatar(user.profile.avatar);
     }
 
@@ -89,5 +104,21 @@ export class UpdateProfile {
     } catch (error: any) {
       logger.error("Error deleting old avatar:", error.message);
     }
+  }
+
+  private async sendVerificationEmail(userId: Types.ObjectId, email: string) {
+    // Create a new verification code for the user
+    const verificationCode = await this.verificationCodeRepository.create({
+      userId: userId,
+      type: VerificationCodeTypes.VERIFY_EMAIL,
+      expiredAt: thirtyDaysFromNow(), // Code expires in 30 days
+    });
+
+    // Send the verification email
+    // Send the verification email with the generated code
+    await emailProvider.sendVerificationEmail(
+      email,
+      verificationCode._id.toString()
+    );
   }
 }
