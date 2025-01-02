@@ -15,6 +15,7 @@ import { GetUserSessions } from "../domain/usecases/session/GetUserSessions";
 import { ChangePassword } from "../domain/usecases/user/ChangePassword";
 import { GetAllUsers } from "../domain/usecases/user/GetAllUsers";
 import { GetUser } from "../domain/usecases/user/GetUser";
+import { UpdateProfile } from "../domain/usecases/user/UpdateProfile";
 
 export class DIContainer {
   private userRepository: UserRepositoryImpl;
@@ -94,6 +95,7 @@ export class DIContainer {
     );
   }
 
+  // User use case
   getAllUsersUseCase(): GetAllUsers {
     return new GetAllUsers(this.getUserRepository());
   }
@@ -106,6 +108,13 @@ export class DIContainer {
     return new ChangePassword(
       this.getUserRepository(),
       this.getSessionRepository()
+    );
+  }
+
+  getUpdateProfileUseCase(): UpdateProfile {
+    return new UpdateProfile(
+      this.getUserRepository(),
+      this.getVerificationCodeRepository()
     );
   }
 
